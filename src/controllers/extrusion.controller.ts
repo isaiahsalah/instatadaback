@@ -1,60 +1,92 @@
 import { Request, Response } from "express";
 import client from "../database/conexion";
-import { productionAdvance, productionOrder } from "../database/extrusion.query";
+import {
+  productionAdvance,
+  productionOrder,
+} from "../database/extrusion.query";
+import { Extrusion_PA, Extrusion_PO } from "../models/extrusion.corte";
 
-export const postExtrusionAvancedOrder = async (req: Request, res: Response) => {
-  
-    const { from, to } = req.body;
-    const dateFrom = new Date(from);
-    const dateTo = new Date(to);
-  
+export const postExtrusionAvancedOrder = async (
+  req: Request,
+  res: Response
+) => {
+  const { from, to } = req.body;
+  const dateFrom = new Date(from);
+  const dateTo = new Date(to);
+
   try {
-    const result_pa= await productionAdvance({from:dateFrom, to:dateTo})
-    const result_po= await productionOrder({from:dateFrom, to:dateTo})
-    const turnLine=[
-        { "turno": "Dia", "linea": "1" },
-        { "turno": "Dia", "linea": "2" },
-        { "turno": "Dia", "linea": "3" },
-        { "turno": "Dia", "linea": "4" },
-        { "turno": "Noche", "linea": "1" }, 
-        { "turno": "Noche", "linea": "2" },
-        { "turno": "Noche", "linea": "3" },
-        { "turno": "Noche", "linea": "4" }
-      ]
+    const result_pa: Extrusion_PA[] | undefined = await productionAdvance({
+      from: dateFrom,
+      to: dateTo,
+    });
+    const result_po: Extrusion_PO[] | undefined = await productionOrder({
+      from: dateFrom,
+      to: dateTo,
+    });
+    const turnLine = [
+      { turno: "Dia", linea: 1 },
+      { turno: "Dia", linea: 2 },
+      { turno: "Dia", linea: 3 },
+      { turno: "Dia", linea: 4 },
+      { turno: "Noche", linea: 1 },
+      { turno: "Noche", linea: 2 },
+      { turno: "Noche", linea: 3 },
+      { turno: "Noche", linea: 4 },
+    ];
 
-      const data= turnLine.map(item => {
-        // Buscar los datos de producción
-        const productionData = result_pa.find((p: { turno: string; linea: string; }) => p.turno === item.turno && p.linea === item.linea) || { acumulado: 0, mala: 0 };
-        // Buscar los datos de objetivos
-        const objectiveData = result_po.find((o: { turno: string; linea: string; }) => o.turno === item.turno && o.linea === item.linea) || { objetivo: 0 };
-    
-        // Cálculos de Cumplimiento
-        const cumplimiento = objectiveData.objetivo > 0 
-          ? Math.round((productionData.acumulado / objectiveData.objetivo) * 100 * 100) / 100 
-          : 0;
-    
-        // Cálculos de Calidad
-        const calidad = (productionData.acumulado + productionData.mala) > 0
-          ? Math.round((productionData.acumulado / (productionData.acumulado + productionData.mala)) * 100 * 100) / 100
-          : 0;
-    
-        // Cálculo de Promedio
-        const promedio = Math.round(((cumplimiento + calidad) / 2) * 100) / 100;
-    
-        // Crear el objeto con los resultados calculados
-        return {
-          turno: item.turno,
-          linea: item.linea,
-          acumulado: productionData.acumulado,
-          objetivo: objectiveData.objetivo,
-          mala: productionData.mala,
-          cumplimiento,
-          calidad,
-          promedio
-        };
-      });
+    if (result_pa === undefined || result_po === undefined) return;
 
-    console.log(data);
+    //console.log(result_pa);
+
+    const data = turnLine.map((item) => {
+      // Buscar los datos de producción
+      const productionData = result_pa.find(
+        (p: { turno: string; linea: number }) =>
+          p.turno === item.turno && p.linea === item.linea
+      ) || { acumulado: 0, mala: 0 };
+      // Buscar los datos de objetivos
+      const objectiveData = result_po.find(
+        (o: { turno: string; linea: number }) =>
+          o.turno === item.turno && o.linea === item.linea
+      ) || { objetivo: 0 };
+
+      // Cálculos de Cumplimiento
+      const cumplimiento =
+        objectiveData.objetivo > 0
+          ? Math.round(
+              (productionData.acumulado / objectiveData.objetivo) * 100 * 100
+            ) / 100
+          : 0;
+
+      // Cálculos de Calidad
+      const calidad =
+        productionData.acumulado + productionData.mala > 0
+          ? Math.round(
+              (productionData.acumulado /
+                (productionData.acumulado + productionData.mala)) *
+                100 *
+                100
+            ) / 100
+          : 0;
+      //console.log(productionData.acumulado + productionData.mala);
+      // Cálculo de Promedio
+      const promedio = Number((Number((cumplimiento + calidad).toFixed(2)) / 2).toFixed(2) ) ;
+      
+
+      // Crear el objeto con los resultados calculados
+      return {
+        turno: item.turno,
+        linea: item.linea,
+        acumulado: productionData.acumulado,
+        objetivo: objectiveData.objetivo,
+        mala: productionData.mala,
+        cumplimiento,
+        calidad,
+        promedio,
+      };
+    });
+
+    //console.log(data);
 
     res.json(data);
   } catch (error) {
