@@ -59,7 +59,7 @@ export const postImpresionAvancedOrder = async (
       };
     });
 
-    console.log(data);
+    //console.log(data);
 
     res.json(data);
   } catch (error) {
