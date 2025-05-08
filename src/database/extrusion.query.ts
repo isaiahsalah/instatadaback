@@ -1,13 +1,14 @@
-import { Extrusion_PA, Extrusion_PO, ExtrusionModel } from "../models/extrusion.corte";
+import {Extrusion_PA, Extrusion_PO, ExtrusionModel} from "../models/extrusion.corte";
 import client from "./conexion";
 
-export const productionAdvance = async ({
-  from,
-  to,
-}: {
-  from: Date;
-  to: Date;
-}) => {
+export const extrusionQuery = async () => {
+  const query = await client.query(`
+
+    
+    `);
+};
+
+export const productionAdvance = async ({from, to}: {from: Date; to: Date}) => {
   try {
     const result = await client.query(`
           SELECT 
@@ -23,9 +24,9 @@ export const productionAdvance = async ({
         FROM 
             production.production_advance pa
         WHERE 
-            pa.production_advance_date BETWEEN '${
-              from.toISOString().split("T")[0]
-            }' AND '${to.toISOString().split("T")[0]}' 
+            pa.production_advance_date BETWEEN '${from.toISOString().split("T")[0]}' AND '${
+      to.toISOString().split("T")[0]
+    }' 
             AND pa.production_sector_name = 'EXTRUSION' 
             AND pa.state = 1
             AND pa.machine_name != 'EXTRUSORA PARA REGISTRO 1'
@@ -34,14 +35,12 @@ export const productionAdvance = async ({
             Linea
           `);
     // Optimización del formato antes de enviarlo en la respuesta JSON
-    const optimizedResults:Extrusion_PA[] = result.rows.map(
-      (item:  Extrusion_PA) => ({
-        turno: item.turno,
-        linea: Number(item.linea),
-        acumulado: Math.round(Number(item.acumulado) * 100) / 100, // Redondeamos a 2 decimales
-        mala: Math.round(Number(item.mala) * 100) / 100, // Redondeamos a 2 decimales
-      })
-    );
+    const optimizedResults: Extrusion_PA[] = result.rows.map((item: Extrusion_PA) => ({
+      turno: item.turno,
+      linea: Number(item.linea),
+      acumulado: Math.round(Number(item.acumulado) * 100) / 100, // Redondeamos a 2 decimales
+      mala: Math.round(Number(item.mala) * 100) / 100, // Redondeamos a 2 decimales
+    }));
     //console.log(optimizedResults);
     return optimizedResults;
   } catch (error) {
@@ -49,13 +48,7 @@ export const productionAdvance = async ({
   }
 };
 
-export const productionOrder = async ({
-  from,
-  to,
-}: {
-  from: Date;
-  to: Date;
-}) => {
+export const productionOrder = async ({from, to}: {from: Date; to: Date}) => {
   try {
     const result = await client.query(`
          SELECT 
@@ -70,9 +63,9 @@ export const productionOrder = async ({
     FROM 
         production.production_order po
     WHERE 
-        po.production_order_date BETWEEN '${
-          from.toISOString().split("T")[0]
-        }' AND '${to.toISOString().split("T")[0]}' 
+        po.production_order_date BETWEEN '${from.toISOString().split("T")[0]}' AND '${
+      to.toISOString().split("T")[0]
+    }' 
         AND po.production_sector_name = 'EXTRUSION' 
         AND po.state = 1
         AND po.machine_name != 'EXTRUSORA PARA REGISTRO 1'
@@ -81,18 +74,24 @@ export const productionOrder = async ({
         Linea
           `);
 
-
     // Optimización del formato antes de enviarlo en la respuesta JSON
-    const optimizedResults:Extrusion_PO[] = result.rows.map(
-      (item:Extrusion_PO) => ({
-        turno: item.turno,
-        linea: Number(item.linea),
-        objetivo: Math.round(Number(item.objetivo) * 100) / 100, // Redondeamos a 2 decimales
-      })
-    );
+    const optimizedResults: Extrusion_PO[] = result.rows.map((item: Extrusion_PO) => ({
+      turno: item.turno,
+      linea: Number(item.linea),
+      objetivo: Math.round(Number(item.objetivo) * 100) / 100, // Redondeamos a 2 decimales
+    }));
     //console.log(optimizedResults);
     return optimizedResults;
   } catch (error) {
     console.error("❌ Error en consulta production order:", error);
   }
 };
+
+/*
+Consultas arpovadas
+
+
+
+
+
+*/

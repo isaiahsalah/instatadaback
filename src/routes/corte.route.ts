@@ -1,11 +1,9 @@
-import { Router } from "express";
-import {
-    postCorteAvancedOrder
-} from "../controllers/corte.controller";
+import {Router} from "express";
+import {getCorte} from "../controllers/corte.controller";
 
 const router = Router();
 
 // Routes
-router.post("/avancedOrder", postCorteAvancedOrder);
+router.get("/corte", getCorte);
 
 export default router;
