@@ -43,7 +43,7 @@ production_data AS (
     LEFT JOIN 
         production.production_turn pt  ON  pt.id = pa.production_turn_id
     LEFT JOIN 
-        company.person pe  ON  pe.id = pt.operator_id
+        company.person pe  ON  pe.id = pa.operator_id
     LEFT JOIN 
         company.team_work tw  ON  tw.id = pe.team_work_id
     WHERE 
