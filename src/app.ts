@@ -5,8 +5,6 @@ import dotenv from "dotenv";
 import sequelize from "./database/conexion";
 import client from "./database/conexion";
 import bolsasRoute from "./routes/bolsas.route";
-import corteRoute from "./routes/corte.route";
-import impresionRoute from "./routes/impresion.route";
 
 // Configurar variables de entorno
 dotenv.config();
@@ -20,8 +18,6 @@ app.use(express.json());
 // Rutas de ejemplo
 
 app.use("/bolsas", bolsasRoute);
-/*app.use("/corte", corteRoute);
-app.use("/impresion", impresionRoute);*/
 app.get("/", async (req, res) => {
   const result = await client.query(`
     SELECT name,description

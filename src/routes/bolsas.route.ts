@@ -1,9 +1,11 @@
 import {Router} from "express";
-import {getExtrusion} from "../controllers/bolsas.controller";
+import {getCorte, getExtrusion, getImpresion} from "../controllers/bolsas.controller";
 
 const router = Router();
 
 // Routes
 router.get("/extrusion", getExtrusion);
+router.get("/corte", getCorte);
+router.get("/impresion", getImpresion);
 
 export default router;
