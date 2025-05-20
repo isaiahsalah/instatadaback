@@ -150,8 +150,8 @@ ROUND(SUM(
 		), 2
 	)AS weight,
 	CASE 
-		WHEN pr.family_id != '2173E216AE414D5F'
-		THEN
+		WHEN MAX(pr.family_id) != '2173E216AE414D5F' 
+        THEN
 			ROUND(
 				SUM(
 					CASE 
@@ -170,7 +170,7 @@ ROUND(SUM(
 					END
 				), 2
 			)
-		ELSE null
+		ELSE NULL
 	END AS jaba
 FROM production.production_advance pa
 	INNER JOIN 
@@ -208,13 +208,13 @@ WHERE
 GROUP BY 
 	tw.name,
 	pa.turn_type_name,
-	dpt.person_name,
+	dpt.person_name
 	--pa.machine_name, 
     --oc.operator_count,
 	--pa.primary_unit_measure_production_name,
 	--pa.primary_unit_measure_production_id,
 	--pa.secondary_unit_measure_production_name,
-	pr.family_id
+	--pr.family_id
 ORDER BY 
     tw.name ASC,  
 	dpt.person_name
