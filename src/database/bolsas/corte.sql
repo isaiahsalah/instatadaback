@@ -200,8 +200,8 @@ FROM production.production_advance pa
 			SELECT 1
 			FROM product.conversion co2
 			WHERE co2.product_id = co.product_id
-			  AND co2.unit_measure_id = co.equivalent_unit_measure_id
-			  AND co2.equivalent_unit_measure_id = co.unit_measure_id
+			AND co2.unit_measure_id = co.equivalent_unit_measure_id
+			AND co2.equivalent_unit_measure_id = co.unit_measure_id
 		)
 	)
 	LEFT JOIN 
@@ -209,9 +209,9 @@ FROM production.production_advance pa
 	LEFT JOIN 
 		company.team_work tw ON tw.id = pe.team_work_id  
 WHERE 
-    pa.production_sector_id = '989FCCEA0DD44E4E' --sector de producción
+    pa.production_sector_id = '7B630AAECEAA4F0F' --sector de producción
     AND pa.production_advance_date  BETWEEN $1 AND $2  --fecha de producción
-	--AND pa.machine_name != 'CORTADORA PARA REGISTROS' --producción registrada fuera de turno
+	AND pa.machine_name != 'CORTADORA PARA REGISTROS' --producción registrada fuera de turno
     AND pa.state = 1 --producción no anulada
 	--AND pa.machine_name='CORTADORA 6'
 	--AND pa.turn_type_name='Dia'

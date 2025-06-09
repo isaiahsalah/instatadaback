@@ -1,6 +1,6 @@
-import { Sequelize } from "sequelize";
+import {Sequelize} from "sequelize";
 import dotenv from "dotenv";
-const { Client } = require('pg');
+const {Client} = require("pg");
 
 dotenv.config(); // Cargar variables de entorno
 /*
@@ -19,14 +19,13 @@ const sequelize = new Sequelize(
 export default sequelize;
 */
 
-
 // Crear un cliente para la base de datos usando las variables de entorno
-const client = new Client({
+const clientBags = new Client({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME_BAGS,
 });
 
-export default client
+export default clientBags;
