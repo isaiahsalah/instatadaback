@@ -23,7 +23,7 @@ async function main() {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
   });
 }
-
+/*
 // Función para obtener y mostrar el uso de memoria
 function mostrarUsoDeMemoria() {
   const memoria = process.memoryUsage();
@@ -41,6 +41,6 @@ function mostrarUsoDeMemoria() {
 }
 
 // Ejecutar la función cada segundo
-setInterval(mostrarUsoDeMemoria, 1000);
+setInterval(mostrarUsoDeMemoria, 1000);*/
 
 main();
