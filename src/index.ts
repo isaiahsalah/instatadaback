@@ -24,4 +24,23 @@ async function main() {
   });
 }
 
+// Función para obtener y mostrar el uso de memoria
+function mostrarUsoDeMemoria() {
+  const memoria = process.memoryUsage();
+
+  console.clear(); // Limpiar la consola para mantener la información actualizada
+  console.log("Uso de memoria:");
+  console.log(`RSS: ${(memoria.rss / 1024 / 1024).toFixed(2)} MB`);
+  console.log(`Heap Total: ${(memoria.heapTotal / 1024 / 1024).toFixed(2)} MB`);
+  console.log(`Heap Usado: ${(memoria.heapUsed / 1024 / 1024).toFixed(2)} MB`);
+  console.log(`Externos: ${(memoria.external / 1024 / 1024).toFixed(2)} MB`);
+
+  if (memoria.arrayBuffers) {
+    console.log(`Buffers de Array: ${(memoria.arrayBuffers / 1024 / 1024).toFixed(2)} MB`);
+  }
+}
+
+// Ejecutar la función cada segundo
+setInterval(mostrarUsoDeMemoria, 1000);
+
 main();
